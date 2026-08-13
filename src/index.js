@@ -77,7 +77,7 @@ app.post("/simulate", (req, res) => {
 
 app.get("/api", (_req, res) => {
   res.json({
-    name: "Wallet Monitor Service",
+    name: "Wallet Monitor",
     status: "running",
     dryRun: config.dryRun,
     rpcConfigured: Boolean(config.rpcUrl),

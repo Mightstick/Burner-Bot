@@ -1,7 +1,7 @@
 {
-  "name": "wallet-monitor-service",
+  "name": "wallet-monitor",
   "version": "1.0.0",
-  "description": "A modular wallet-monitoring app designed for local development with a dry-run mode and optional RPC.",
+  "description": "A professional, safe wallet monitoring app for local development with a dry-run mode and optional RPC.",
   "main": "src/index.js",
   "scripts": {
     "dev": "nodemon src/index.js",

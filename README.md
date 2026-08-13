@@ -1,6 +1,6 @@
-# Wallet Monitor Service
+# Wallet Monitor
 
-A safe wallet-monitoring starter for local development and future testnet use. It supports a dry-run mode that never broadcasts transactions and can run without a private key.
+A safe, professional wallet-monitoring starter for local development and future testnet use. It supports a dry-run mode that never broadcasts transactions and can run without a private key.
 
 ## What this project does
 
