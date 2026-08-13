@@ -1,4 +1,5 @@
 import express from "express";
+import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { ethers } from "ethers";
@@ -12,8 +13,13 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
-app.use(express.static(path.join(process.cwd(), "public")));
 
+const publicPath = path.join(process.cwd(), "public");
+if (fs.existsSync(publicPath)) {
+  app.use(express.static(publicPath));
+} else {
+  console.log("Public folder not found, skipping static serving.");
+}
 const monitor = createMonitor();
 
 app.get("/health", async (_req, res) => {
