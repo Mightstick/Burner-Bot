@@ -1,5 +1,5 @@
 import pkg from "ethers";
-const { providers, formatEther } = pkg;
+const { providers, utils } = pkg;
 import { config } from "./config.js";
 import { getMockWalletState } from "./mock-wallet.js";
 
@@ -41,7 +41,7 @@ export class WalletMonitor {
     return {
       address,
       balanceWei: balance.toString(),
-      balanceEth: formatEther(balance),
+      balanceEth: utils.formatEther(balance),
       source: "rpc",
     };
   }
