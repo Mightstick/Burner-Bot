@@ -47,7 +47,7 @@ app.get("/health", async (_req, res) => {
 app.get("/wallet", async (req, res) => {
   const address = req.query.address || config.watchWalletAddress;
 
-  if (!ethers.isAddress(address)) {
+  if (!ethers.utils.isAddress(address)) {
     return res.status(400).json({
       ok: false,
       error: "Invalid Ethereum address",
