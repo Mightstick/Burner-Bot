@@ -1,11 +1,12 @@
-import { ethers } from "ethers";
+import pkg from "ethers";
+const { providers, formatEther } = pkg;
 import { config } from "./config.js";
 import { getMockWalletState } from "./mock-wallet.js";
 
 export class WalletMonitor {
   constructor(rpcUrl = "") {
     this.rpcUrl = rpcUrl;
-    this.provider = rpcUrl ? new ethers.JsonRpcProvider(rpcUrl) : null;
+    this.provider = rpcUrl ? new providers.JsonRpcProvider(rpcUrl) : null;
   }
 
   async getNetworkInfo() {
@@ -40,7 +41,7 @@ export class WalletMonitor {
     return {
       address,
       balanceWei: balance.toString(),
-      balanceEth: ethers.formatEther(balance),
+      balanceEth: formatEther(balance),
       source: "rpc",
     };
   }

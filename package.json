@@ -15,11 +15,12 @@
     "monitor",
     "express",
     "ethers",
-    "blockchain" 
+    "blockchain"
   ],
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@adraffy/ens-normalize": "^1.11.1",
     "dotenv": "^16.4.5",
     "ethers": "^5.7.2",
     "express": "^4.21.1",
