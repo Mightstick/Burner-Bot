@@ -1,20 +1,31 @@
 {
-  "name": "burner-bot-bsc",
+  "name": "wallet-monitor-service",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A modular wallet-monitoring app designed for local development with a dry-run mode and optional RPC.",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js",
-    "start": "node index.js"
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "check": "node src/check-wallet.js",
+    "test": "node --test"
   },
   "type": "module",
-  "keywords": [],
+  "keywords": [
+    "wallet",
+    "monitor",
+    "express",
+    "ethers",
+    "blockchain"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "dotenv": "^16.0.1",
+    "dotenv": "^16.4.5",
     "ethers": "^6.13.1",
+    "express": "^4.21.1",
     "log-timestamp": "^0.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }

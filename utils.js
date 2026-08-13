@@ -1,7 +1,7 @@
-import { BigNumber } from "ethers";
+export function formatBalance(weiValue) {
+  return Number(weiValue) / 1e18;
+}
 
-export const GWEI = BigNumber.from(10).pow(9);
-
-export function gasPriceToGwei(gasPrice) {
-  return gasPrice.mul(100).div(GWEI).toNumber() / 100;
+export function isValidAddress(address) {
+  return /^0x[a-fA-F0-9]{40}$/.test(address);
 }

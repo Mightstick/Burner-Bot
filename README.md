@@ -1,41 +1,115 @@
-# Crypto Burner Bot
+# Wallet Monitor Service
 
-Crypto Burner Bot is a utility that monitors a wallet address and burns any ETH or BNB sent to it, effectively preventing anyone from paying gas fees and withdrawing funds from the target wallet. The primary purpose is to stop a sweeper bot from emptying a compromised wallet.
+A safe wallet-monitoring starter for local development and future testnet use. It supports a dry-run mode that never broadcasts transactions and can run without a private key.
 
-## Getting Started
+## What this project does
 
-### Dependencies
+- monitors a wallet address for balance checks
+- works in local development without a real RPC connection
+- supports a mock wallet address and mock balance for testing
+- logs a simulated transaction instead of broadcasting it in dry-run mode
+- is structured so a real testnet wallet can be added later without touching the core logic
 
-- NodeJS
+## Important safety rules
 
-### Installation
+- no private key is required
+- no private key is stored or exposed
+- no wallet-draining or fund-sending logic is included
+- all secrets live in `.env`, and `.env` is ignored by Git
+- dry-run mode never calls a send function or broadcasts a transaction
 
-1. Clone the repository or download the source code.
-2. Run `npm i` in the root directory of the project to install the required packages.
-3. Create a `.env` file in the root directory of the project and add the following values:
-   - `NETWORK_RPC_URL`: The RPC URL for the network you are using.
-   - `PRIVATE_KEY_ZERO_GAS`: The private key of the wallet you are targeting.
+## Setup
 
-### Executing the Program
+1. Install dependencies:
 
-- Run `npm run start` in the root directory of the project.
+```bash
+npm install
+```
 
-## How it Works
+2. Copy the example environment file:
 
-The Crypto Burner Bot listens for new blocks in the blockchain and checks the balance of the target wallet. If there are any funds in the wallet, the bot attempts to burn them by sending a transaction with a gas price higher than the balance divided by 21000 (the gas limit for a simple transfer). This makes it impossible to mine a transaction with enough gas to withdraw the funds.
+```bash
+cp .env.example .env
+```
 
-Here's a high-level overview of the script:
+3. Edit `.env` with your local values.
 
-1. Import the necessary libraries and load the environment variables.
-2. Set up a connection to the blockchain using the provided RPC URL.
-3. Create a wallet object using the provided private key.
-4. Define the `burn` function, which:
-   - Retrieves the wallet's balance.
-   - Calculates the gas price required to burn the funds.
-   - Sends a transaction with the calculated gas price to burn the funds.
-5. Set up an event listener for new blocks in the blockchain.
-6. Call the `burn` function whenever a new block is detected.
+Example:
 
-## Acknowledgments
+```env
+PORT=3000
+DRY_RUN=true
+NETWORK_RPC_URL=
+WATCH_WALLET_ADDRESS=0x1111111111111111111111111111111111111111
+MOCK_BALANCE_ETH=1.5
+```
 
-This application is largely based on code supplied in a [Twitter thread](https://twitter.com/smpalladino/status/1373049027365904389?s=20&t=PE8rsffOnw8PxiKzpl7OdQ) by Santiago Palladino.
+## Run locally
+
+```bash
+npm run start
+```
+
+### Development mode
+
+```bash
+npm run dev
+```
+
+### Run tests
+
+```bash
+npm test
+```
+
+## Dry-run mode
+
+When `DRY_RUN=true`, the app:
+
+- does not require a private key
+- does not connect to a live RPC unless you provide one
+- uses a mock wallet and mock balance for local testing
+- logs a readable description of the transaction it would have created
+- never sends a transaction to the network
+
+## API
+
+### Health check
+
+```http
+GET /health
+```
+
+### Wallet status
+
+```http
+GET /wallet?address=0x1111111111111111111111111111111111111111
+```
+
+### Simulated transaction preview
+
+```http
+POST /simulate
+```
+
+Example body:
+
+```json
+{
+  "to": "0x2222222222222222222222222222222222222222",
+  "value": "0.1",
+  "note": "Sample transfer preview"
+}
+```
+
+The response includes the planned transaction details and a `wouldBroadcast: false` flag.
+
+## Modular structure
+
+- `src/config.js` handles environment configuration
+- `src/mock-wallet.js` defines mock wallet data for local testing
+- `src/monitor.js` performs optional RPC or mock balance checks
+- `src/transaction-simulator.js` builds a dry-run transaction preview
+- `src/index.js` exposes the API and wires the app together
+
+This keeps the project safe for development while allowing a real testnet wallet integration later with minimal changes.
