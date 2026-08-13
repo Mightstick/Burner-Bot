@@ -15,8 +15,7 @@
     "monitor",
     "express",
     "ethers",
-    "blockchain"
-  ],
+    "blockchain" ],
   "author": "",
   "license": "MIT",
   "dependencies": {
