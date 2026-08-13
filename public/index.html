@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wallet Monitor</title>
+    <style>
+      :root {
+        --bg: #0b1020;
+        --panel: #121a2b;
+        --panel-2: #1b243a;
+        --accent: #5eead4;
+        --accent-2: #7c3aed;
+        --text: #e5eefb;
+        --muted: #9db3cd;
+        --danger: #f87171;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(180deg, var(--bg), #111827);
+        color: var(--text);
+      }
+
+      .wrapper {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 40px 20px 80px;
+      }
+
+      .card {
+        background: rgba(19, 27, 42, 0.92);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 18px;
+        box-shadow: 0 25px 45px rgba(0,0,0,0.25);
+        padding: 28px;
+      }
+
+      h1 {
+        margin-top: 0;
+        font-size: clamp(2rem, 5vw, 3rem);
+      }
+
+      .status {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(94, 234, 212, 0.12);
+        color: var(--accent);
+        border: 1px solid rgba(94, 234, 212, 0.3);
+        margin-bottom: 22px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 0.9fr;
+        gap: 16px;
+        margin-top: 24px;
+      }
+
+      input, button {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.12);
+        padding: 14px 16px;
+        font-size: 1rem;
+      }
+
+      input {
+        background: #0d1529;
+        color: var(--text);
+      }
+
+      button {
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: #0b1020;
+        font-weight: 700;
+        cursor: pointer;
+        border: none;
+      }
+
+      .result {
+        margin-top: 28px;
+        padding: 20px;
+        background: var(--panel-2);
+        border-radius: 14px;
+        border: 1px solid rgba(255,255,255,0.07);
+      }
+
+      .result h3 {
+        margin-top: 0;
+      }
+
+      .meta {
+        color: var(--muted);
+        margin: 10px 0;
+      }
+
+      .pill {
+        display: inline-block;
+        padding: 6px 10px;
+        background: rgba(124, 58, 237, 0.15);
+        color: #d9c8ff;
+        border-radius: 999px;
+        margin-bottom: 10px;
+      }
+
+      .danger {
+        color: var(--danger);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="card">
+        <div class="status">Safe dry-run mode</div>
+        <h1>Wallet Monitor</h1>
+        <p class="meta">Enter a wallet address to inspect balance and status without sending any blockchain transaction.</p>
+
+        <div class="form-grid">
+          <input id="walletInput" type="text" value="0x1111111111111111111111111111111111111111" placeholder="0x... wallet address" />
+          <button id="checkButton">Check Wallet</button>
+        </div>
+
+        <div class="result" id="resultBox">
+          <div class="pill">Local preview</div>
+          <h3>Ready</h3>
+          <p class="meta">This app is in dry-run mode. It will never broadcast a transaction.</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const walletInput = document.getElementById('walletInput');
+      const resultBox = document.getElementById('resultBox');
+      const button = document.getElementById('checkButton');
+
+      async function checkWallet() {
+        const wallet = walletInput.value.trim();
+
+        if (!wallet) {
+          resultBox.innerHTML = '<div class="pill">Input required</div><h3>Missing address</h3><p class="meta danger">Please enter a wallet address.</p>';
+          return;
+        }
+
+        try {
+          const res = await fetch(`/wallet?address=${encodeURIComponent(wallet)}`);
+          const data = await res.json();
+
+          if (!res.ok || !data.ok) {
+            resultBox.innerHTML = '<div class="pill">Error</div><h3>Lookup failed</h3><p class="meta danger">' + (data.error || 'Unknown error') + '</p>';
+            return;
+          }
+
+          const walletData = data.wallet;
+          resultBox.innerHTML = `
+            <div class="pill">Dry run</div>
+            <h3>Wallet status</h3>
+            <p class="meta"><strong>Address:</strong> ${walletData.address}</p>
+            <p class="meta"><strong>Balance:</strong> ${walletData.balanceEth} ETH</p>
+            <p class="meta"><strong>Source:</strong> ${walletData.source}</p>
+            <p class="meta"><strong>Note:</strong> No transaction was sent.</p>
+          `;
+        } catch (error) {
+          resultBox.innerHTML = '<div class="pill">Error</div><h3>Request failed</h3><p class="meta danger">' + error.message + '</p>';
+        }
+      }
+
+      button.addEventListener('click', checkWallet);
+      walletInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') checkWallet();
+      });
+    </script>
+  </body>
+</html>
