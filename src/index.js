@@ -1,13 +1,18 @@
 import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
 import { ethers } from "ethers";
 import { config } from "./config.js";
 import { createMonitor } from "./monitor.js";
 import { buildDryRunTransaction } from "./transaction-simulator.js";
 import "log-timestamp";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "../public")));
+app.use(express.static(path.join(process.cwd(), "public")));
 
 const monitor = createMonitor();
 
